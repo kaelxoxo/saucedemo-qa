@@ -15,7 +15,7 @@ Every Bug below was reproduced against the live site (www.saucedemo.com, Novembe
 | BUG-01 | Reset App State leaves "Remove" buttons on the inventory | all | Low | P3 |
 | BUG-02 | Checkout can be started with an empty cart | all | Medium | P2 |
 | BUG-03 | Empty-cart overview shows "Item total: $0" without decimals | all | Low | P4 |
-| BUG-04 | Checkout accepts whitespace-only checkout information | all except problem_user | Medium | P2 |
+| BUG-04 | Checkout accepts whitespace-only names and postal code | all except problem_user | Medium | P2 |
 | BUG-05 | Order confirmation page reachable by URL while the cart still holds items | all | Medium | P3 |
 | BUG-06 | Every product image is the same placeholder photo | problem_user | High | P1 |
 | BUG-07 | Sorting the inventory has no effect | problem_user | Medium | P2 |
@@ -85,7 +85,7 @@ Every Bug below was reproduced against the live site (www.saucedemo.com, Novembe
 - **Evidence:** [docs/bugs/BUG-03.png](docs/bugs/BUG-03.png)
 - **Linked test:** `tests/checkout.spec.ts` › `<persona> › TC-18 overview amounts always show cents`
 
-## BUG-04 Checkout accepts whitespace-only checkout information
+## BUG-04 Checkout accepts whitespace-only names and postal code
 
 - **Persona:** all except `problem_user` (where BUG-11 stops the form earlier).
 - **Environment:** see top.

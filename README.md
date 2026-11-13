@@ -4,7 +4,7 @@
 
 Automated end-to-end tests, a bug catalogue, and a UX review of [SauceDemo](https://www.saucedemo.com), a public demo shop. Built as a QA take-home exercise.
 
-**Start here → [REPORT.md](REPORT.md)** (one page: bugs, UX recommendations, approach, where AI helped and where it got things wrong; printable copy: [REPORT.pdf](REPORT.pdf)).
+**Start here → [REPORT.md](REPORT.md)** (one page: bugs, UX recommendations, approach, where AI helped and where it got things wrong). Printable copy: [REPORT.pdf](REPORT.pdf), printed from Chromium on A4 at 9.5 pt with 15 mm margins.
 
 **Walkthrough video (3 min):** _link_
 

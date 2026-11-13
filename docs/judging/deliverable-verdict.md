@@ -4,7 +4,7 @@ Independent deliverable judge ([prompt](../ai-workflow/prompts/04-deliverable-ju
 
 ## Round 1: FAIL
 
-The verdict is reproduced verbatim below. Every listed fix was applied before round 2.
+The verdict is reproduced verbatim below. Every fix that affected a rubric check was applied before round 2.
 
 Fresh clone of `https://github.com/kaelxoxo/saucedemo-qa` at commit `22041749ad0f` (1 commit, 2026-11-13; author/committer `kaelxoxo <198614490+kaelxoxo@users.noreply.github.com>`), cloned to `$TEMP/dj-clone`. Rubric: `docs/ai-workflow/prompts/04-deliverable-judge.md` (brief items 1–5, checks D1–D10). Environment: Windows 11, Node v26.9.0, shell had **`CI=true`** set, so the config applied `retries: 1` and `forbidOnly: true`.
 
@@ -49,3 +49,47 @@ The engineering is solid. The suite runs green from a clean clone in 7.4 minutes
 7. **Minor consistency (D3):**
    - `BUGS.md:18`: change the BUG-04 Persona from "all" to "all except problem_user" to match its entry.
    - `REPORT.md:9`: the "all Personas: 6" row counts BUG-04, which does not apply to `problem_user`. Add a footnote or reword it to "all/most Personas".
+
+## Round 2: PASS
+
+Fresh clone of `https://github.com/kaelxoxo/saucedemo-qa` at HEAD `5e08dd0` ("Address deliverable judge round 1 …"), cloned to `$TEMP/dj-r2`. History is 2 commits, both by `kaelxoxo <198614490+kaelxoxo@users.noreply.github.com>`. Environment: Windows 11, Node v26.9.0, shell had **`CI=true`** set.
+
+**Rubric note.** `docs/ai-workflow/prompts/04-deliverable-judge.md` was edited between rounds:
+- D2: `test.fail` was changed to `knownBug(...)`.
+- D6: the clause "the PDF has exactly 1 page" was removed.
+- D7: "Overrules" was removed, and "claims are traceable" became "Every … claim traces".
+- Wording changes were made elsewhere.
+
+I judged against the **stricter round-1 wording**. Every result below holds under both versions.
+
+### Checks
+
+| ID | Result | Evidence |
+|----|--------|----------|
+| D1 Clean-clone run | **PASS** | I verified the conditions for the shortcut. `git diff --stat 22041749 HEAD -- '*.ts' '*.json' '*.yml'` lists only `data/known-bugs.ts` (1 line: the BUG-04 title string) and `scripts/ux-screenshots.ts` (UX-02b fill values, labels and file name; not part of `npm test`). In the fresh clone, `npm ci` exited 0, `npm run typecheck` exited 0, and `npx playwright test --list` exited 0 with "Total: 362 tests in 7 files". The clone had 0 tracked changes afterwards. **D1 relies on** round 1's full clean-clone run of `22041749`: `npm ci`, `playwright install` and `npm test` all exited 0, with 362 passed in 7.4 min (236 ok, 126 expected failures, 0 retries or flaky). It also relies on CI run **43391820235** (`2204174`, completed, **success**), which I confirmed through the GitHub API. The CI run for `5e08dd0` (43393266082) was still `in_progress` when I wrote this verdict. |
+| D2 Known Bug integrity | **PASS** | I re-ran the round-1 script. There are 28 BUGS.md headings, 28 table rows, 28 keys in `data/known-bugs.ts`, 28 `docs/bugs/*.png` files and 28 IDs pinned through `knownBug(...)` (including the `REGIONS[].knownBugs` map in `tests/visual.spec.ts`). The symmetric differences between all these sets are empty. The heading, table and `known-bugs.ts` titles match exactly, including the new BUG-04 title "Checkout accepts whitespace-only checkout information". No test calls `test.fail`, `.only`, `.skip` or `.fixme` directly. |
+| D3 Bug report quality | **PASS** | All 28 entries contain all 9 required fields (0 missing). All evidence links resolve. Every linked test title resolves against `playwright test --list`. The round-1 inconsistency is fixed: the BUG-04 table row now reads "all except problem_user", which matches the entry. |
+| D4 UX Issues | **PASS** | There are 5 issues. All 7 referenced PNGs exist, and no PNG goes unreferenced. UX-02b was replaced by `UX-02b-non-numeric-zip-accepted.png`, which I viewed: it is annotated with the "UX-02 — Non-numeric ZIP accepted" label and a red box on "Checkout: Overview". Each issue has the Shopper experience, why it matters, and a concrete improvement. UX-02 now covers only error feedback and ZIP format, and points to BUG-04 for blank names (`UX-ISSUES.md:38`). |
+| D5 Report covers the brief | **PASS** | `REPORT.md` §1 covers Bugs (28, by Persona, with a footnote on BUG-04's scope), §2 the top-5 UX recommendations, §3 Why this approach, and §4 AI helped / got wrong. |
+| D6 One page | **PASS** | **Committed `REPORT.pdf`:** 1 page (`/Count 1`). MediaBox is 595×842 pt (A4); producer is Skia/PDF m158 (Chromium). I read it with PyMuPDF. Body text is 9.5 pt, content spans y = 48–740 pt, which leaves about 36 mm unused at the bottom. The PDF text matches the current `REPORT.md` exactly: 638/638 words, difflib similarity 1.000. **Independent render**, using the same method as round 1 (python-markdown with `tables`, Arial 9.5 pt, line-height 1.3, Playwright Chromium `page.pdf` A4): at **15 mm margins it gives 1 page** (253.3 of 267 mm used; round 1 needed 275.6 mm). It fits at 12 mm (249/273). At 20 mm it is right at the limit (257.7 of 257 mm), and at Word's default 25.4 mm it does not fit (266.3 of 246 mm). REPORT.md is now 624 words (round 1: 677). |
+| D7 AI honesty | **PASS** | **REPORT §4 claims all trace:** the 80 Findings and 38 Rejections (verdicts Summary), the two Overrules S2→BUG-02 and S4→BUG-04 (Human review), the overview called unreachable plus BUG-27/28 (P11, "Found after judging"), BUG-26 (P6), P9/E10 (Explorer errors #1–2), and the locator mistake (`pages/InventoryPage.ts:33`). **Round-1 gaps are closed:** (a) `ai-mistakes.md:3` now discloses that rows 9–16 come from sub-agent build reports whose transcripts are not committed (decisions Q17), which satisfies "or the build log". (b) Row 11 no longer cites y=1129; it cites verdicts M4 (860 / 1747) and the explorer's "16 px below the fold" (explorer-raw M4: y=860 against an 844 px fold ✓). (c) `docs/judging/deliverable-verdict.md` exists, and its body matches my round-1 verdict word for word once whitespace and heading markers are normalised. (d) `ai-workflow.md:40` no longer has a broken link; a relative-link scan of all tracked `.md` files finds 0 broken links. AI authorship is disclosed in the README and REPORT §4. |
+| D8 Traceability | **PASS** | All 25 TC table rows appear in test titles; there are no orphan IDs in either direction. All "Automated:" references resolve, including the wildcards (TC-03 → 4 tests, TC-04 → 6, TC-23 product list / cart → 1 each). |
+| D9 Hygiene | **PASS** | I re-grepped the repo, excluding node_modules and the lockfile. No `.only(`, no `debugger`, no keys or tokens, no `C:\`, `/Users/` or `AppData` paths, and no personal email (both commits use the noreply address). The only `console.log` calls are the intended CLI output in `scripts/ux-screenshots.ts`. The other hits are quotations inside `docs/judging/deliverable-verdict.md`. `.gitignore` is unchanged and covers `node_modules/`, `test-results/`, `playwright-report/` and `blob-report/`. `REPORT.pdf` (74 KB) is a deliberate deliverable, not build output. |
+| D10 Terminology | **PASS** | Bug vs UX Issue: whitespace input appears only as BUG-04 (BUGS.md, REPORT §1). UX-02 and REPORT §2 item 2 now cover only feedback and non-numeric ZIP, with an explicit pointer to BUG-04. Severity vs Priority is used correctly (BUGS.md scales; "BUG-27 is Critical but P2"). An avoid-term scan of README, REPORT, BUGS, TEST-CASES and UX-ISSUES finds "user"/"users" only inside quoted site messages ("this user has been locked out", "do not match any user in this service"). No defect, customer, xfail, impact, urgency or criticality. "Keyboard-only Shoppers", "all six Personas", "the locked-out Persona" and "checkout information" all match CONTEXT.md. |
+| Brief #5 video slot | **PASS** | `README.md:9` has `**Walkthrough video (3 min):** _link_`, and the `REPORT.md:3` byline has `Video (3 min): _link_`. The slot is ready, as the brief requires. |
+
+### Overall: **PASS**
+
+All of D1–D10 and the video slot pass. Every round-1 fix that affected a rubric check was applied, and nothing regressed: the code diff is limited to two strings and the UX screenshot script.
+
+### Remaining fixes, in priority order (none blocks sending)
+
+1. **Before sending, replace `_link_`** in `README.md:9` and `REPORT.md:3` with the real video URL. Then regenerate `REPORT.pdf` so it still matches `REPORT.md` word for word. The byline line changes length, so re-check that it is still 1 page.
+2. **`docs/ai-workflow.md:48`** says "Recorded the walkthrough video (linked in the README)". This is past tense, but no video exists yet. It becomes true only once fix 1 is done. Do fix 1 before sending, or change the line to future tense.
+3. **`docs/judging/deliverable-verdict.md:7`** says "Every listed fix was applied before round 2". Two parts were not:
+   - Fix 1's "state the render settings in the README": the README only links `REPORT.pdf`.
+   - Fix 3's "future tense *or* the link": the line is still past tense and there is no link yet.
+
+   Either soften this to "every rubric-affecting fix was applied", or apply those two parts. Also append this round-2 verdict to that file.
+4. **Optional (`README.md:7` or a `REPORT.pdf` note):** state how the PDF was produced (Chromium print, A4, 9.5 pt) so a reviewer printing `REPORT.md` with large margins (≥ 20 mm) knows to use the PDF. At 20 mm or more the Markdown no longer fits on one page.
+5. **Optional wording (`BUGS.md:18,88` and `data/known-bugs.ts:9`):** "Checkout accepts whitespace-only checkout information" repeats "checkout". A suggestion is "Checkout accepts whitespace-only names and postal code". Keep all three places in sync.

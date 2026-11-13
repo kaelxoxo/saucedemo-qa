@@ -45,4 +45,4 @@ flowchart TD
 - Delegated the top-five UX selection to the orchestrator's recommendation, then reviewed the result before sending.
 - Decided every contested Verdict from the Findings judge, including two Overrules, and accepted the rest as the judge wrote them.
 - Reviewed the code, the bug reports and the report before sending.
-- Recorded the walkthrough video (linked in the README).
+- I record the walkthrough video myself, with no AI voice or avatar; the link is in the README.
