@@ -1,6 +1,6 @@
 # Known Bugs
 
-Every Bug below was reproduced against the live site (www.saucedemo.com, November 2026) and is pinned by an automated test that is expected to fail while the Bug exists (`knownBug(...)` in `fixtures/test.ts`, ID list in `data/known-bugs.ts`). When a Bug is fixed, its test starts passing, Playwright reports it as an unexpected pass, and the pin must be removed.
+Every Bug below was reproduced against the live site (www.saucedemo.com, November 2026) and is pinned by an automated test that is expected to fail while the Bug exists. The pin is declared on the test with `knownBugs(...)` (`fixtures/test.ts`, ID list in `data/known-bugs.ts`): it tags the test `@known-bug` and `@BUG-NN`, so pinned tests are labelled in the HTML report and can be filtered there or with `--grep @known-bug`, and a fixture marks every tagged test as expected to fail. When a Bug is fixed, its test starts passing, Playwright reports it as an unexpected pass, and the pin must be removed.
 
 **Environment (all entries).** Chromium (Playwright 1.65 / Chrome Headless Shell 158), project `desktop-chromium` (Desktop Chrome, 1280×720) and project `mobile-chromium` (Pixel 7 emulation, 412×839). Every Bug reproduces in both projects. Evidence screenshots were taken at 1280×800. Password for every Persona: `secret_sauce`.
 

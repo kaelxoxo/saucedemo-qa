@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
-import { expect, knownBug, test } from '../fixtures/test';
+import { expect, knownBugs, test } from '../fixtures/test';
 import type { BugId } from '../data/known-bugs';
 import { BASELINE_PERSONA, SHOPPING_PERSONAS, type ShoppingPersona } from '../data/personas';
 import { productByName } from '../data/products';
@@ -72,27 +72,28 @@ for (const persona of SHOPPING_PERSONAS) {
     test.slow(true, 'logs in two Personas in one test');
 
     for (const region of REGIONS) {
-      test(`TC-23 ${region.name} looks the same as for the Baseline Persona`, async ({
-        loginPage,
-        page,
-        secondPage,
-      }, testInfo) => {
-        for (const [affected, bug] of Object.entries(region.knownBugs)) knownBug(persona === affected, bug);
-        await loginPage.loginAs(persona);
-        await new LoginPage(secondPage).loginAs(BASELINE_PERSONA);
+      test(
+        `TC-23 ${region.name} looks the same as for the Baseline Persona`,
+        knownBugs(
+          ...Object.entries(region.knownBugs).map(([affected, bug]): [boolean, BugId] => [persona === affected, bug]),
+        ),
+        async ({ loginPage, page, secondPage }, testInfo) => {
+          await loginPage.loginAs(persona);
+          await new LoginPage(secondPage).loginAs(BASELINE_PERSONA);
 
-        const actual = await capture(page, region);
-        const baseline = await capture(secondPage, region);
-        const diff = new PNG({ width: actual.width, height: actual.height });
-        const differentPixels = countDifferentPixels(actual, baseline, diff);
+          const actual = await capture(page, region);
+          const baseline = await capture(secondPage, region);
+          const diff = new PNG({ width: actual.width, height: actual.height });
+          const differentPixels = countDifferentPixels(actual, baseline, diff);
 
-        await testInfo.attach(`${persona}.png`, { body: PNG.sync.write(actual), contentType: 'image/png' });
-        await testInfo.attach(`${BASELINE_PERSONA}.png`, { body: PNG.sync.write(baseline), contentType: 'image/png' });
-        if (differentPixels > 0) {
-          await testInfo.attach('diff.png', { body: PNG.sync.write(diff), contentType: 'image/png' });
-        }
-        expect(differentPixels, `${actual.width}x${actual.height} vs Baseline ${baseline.width}x${baseline.height}`).toBe(0);
-      });
+          await testInfo.attach(`${persona}.png`, { body: PNG.sync.write(actual), contentType: 'image/png' });
+          await testInfo.attach(`${BASELINE_PERSONA}.png`, { body: PNG.sync.write(baseline), contentType: 'image/png' });
+          if (differentPixels > 0) {
+            await testInfo.attach('diff.png', { body: PNG.sync.write(diff), contentType: 'image/png' });
+          }
+          expect(differentPixels, `${actual.width}x${actual.height} vs Baseline ${baseline.width}x${baseline.height}`).toBe(0);
+        },
+      );
     }
   });
 }

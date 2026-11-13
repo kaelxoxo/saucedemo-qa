@@ -1,4 +1,4 @@
-import { expect, knownBug, test } from '../fixtures/test';
+import { expect, knownBugs, test } from '../fixtures/test';
 import { PASSWORD, SHOPPING_PERSONAS } from '../data/personas';
 
 /**
@@ -14,19 +14,22 @@ const LOGIN_BUDGET_MS = 2_500;
 
 for (const persona of SHOPPING_PERSONAS) {
   test.describe(persona, () => {
-    test(`TC-24 login shows the inventory within ${LOGIN_BUDGET_MS} ms`, async ({ loginPage, inventoryPage }) => {
-      knownBug(persona === 'performance_glitch_user', 'BUG-25');
-      await loginPage.goto();
-      await loginPage.username.fill(persona);
-      await loginPage.password.fill(PASSWORD);
+    test(
+      `TC-24 login shows the inventory within ${LOGIN_BUDGET_MS} ms`,
+      knownBugs([persona === 'performance_glitch_user', 'BUG-25']),
+      async ({ loginPage, inventoryPage }) => {
+        await loginPage.goto();
+        await loginPage.username.fill(persona);
+        await loginPage.password.fill(PASSWORD);
 
-      const started = performance.now();
-      await loginPage.loginButton.click();
-      await inventoryPage.list.waitFor({ timeout: 15_000 });
-      const elapsedMs = Math.round(performance.now() - started);
+        const started = performance.now();
+        await loginPage.loginButton.click();
+        await inventoryPage.list.waitFor({ timeout: 15_000 });
+        const elapsedMs = Math.round(performance.now() - started);
 
-      test.info().annotations.push({ type: 'login-to-inventory', description: `${elapsedMs} ms` });
-      expect(elapsedMs).toBeLessThanOrEqual(LOGIN_BUDGET_MS);
-    });
+        test.info().annotations.push({ type: 'login-to-inventory', description: `${elapsedMs} ms` });
+        expect(elapsedMs).toBeLessThanOrEqual(LOGIN_BUDGET_MS);
+      },
+    );
   });
 }

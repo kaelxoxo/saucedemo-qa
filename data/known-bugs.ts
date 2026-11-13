@@ -1,5 +1,5 @@
 /**
- * Known Bugs, one per BUGS.md entry. Tests pin them with `knownBug(...)`
+ * Known Bugs, one per BUGS.md entry. Tests pin them with `knownBugs(...)`
  * (fixtures/test.ts), so keep IDs and titles in sync with BUGS.md.
  */
 export const KNOWN_BUGS = {

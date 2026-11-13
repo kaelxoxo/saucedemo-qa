@@ -1,4 +1,4 @@
-import { expect, knownBug, test } from '../fixtures/test';
+import { expect, knownBugs, test } from '../fixtures/test';
 import { SHOPPING_PERSONAS } from '../data/personas';
 import { PRODUCTS, parseCents, productByName, toCents } from '../data/products';
 import type { CustomerInfo } from '../pages/CheckoutPage';
@@ -20,73 +20,83 @@ for (const persona of SHOPPING_PERSONAS) {
         await checkoutPage.gotoInformation();
       });
 
-      test('TC-16 empty first name is rejected', async ({ checkoutPage }) => {
+      test(
+        'TC-16 empty first name is rejected',
         // problem_user: the last name keystrokes land in First Name, so Last Name is reported instead.
-        knownBug(persona === 'problem_user', 'BUG-11');
+        knownBugs([persona === 'problem_user', 'BUG-11']),
+        async ({ checkoutPage }) => {
+          await checkoutPage.submitInformation({ ...SHOPPER, firstName: '' });
 
-        await checkoutPage.submitInformation({ ...SHOPPER, firstName: '' });
+          await expect(checkoutPage.error).toHaveText('Error: First Name is required');
+        },
+      );
 
-        await expect(checkoutPage.error).toHaveText('Error: First Name is required');
-      });
+      test(
+        'TC-16 empty last name is rejected',
+        knownBugs([persona === 'error_user', 'BUG-18']),
+        async ({ checkoutPage }) => {
+          await checkoutPage.submitInformation({ ...SHOPPER, lastName: '' });
 
-      test('TC-16 empty last name is rejected', async ({ checkoutPage }) => {
-        knownBug(persona === 'error_user', 'BUG-18');
+          await expect(checkoutPage.error).toHaveText('Error: Last Name is required');
+        },
+      );
 
-        await checkoutPage.submitInformation({ ...SHOPPER, lastName: '' });
+      test(
+        'TC-16 empty postal code is rejected',
+        knownBugs([persona === 'problem_user', 'BUG-11']),
+        async ({ checkoutPage }) => {
+          await checkoutPage.submitInformation({ ...SHOPPER, postalCode: '' });
 
-        await expect(checkoutPage.error).toHaveText('Error: Last Name is required');
-      });
+          await expect(checkoutPage.error).toHaveText('Error: Postal Code is required');
+        },
+      );
 
-      test('TC-16 empty postal code is rejected', async ({ checkoutPage }) => {
-        knownBug(persona === 'problem_user', 'BUG-11');
+      test(
+        'TC-16 whitespace-only first name is rejected',
+        knownBugs([persona !== 'problem_user', 'BUG-04'], [persona === 'problem_user', 'BUG-11']),
+        async ({ checkoutPage }) => {
+          await checkoutPage.submitInformation({ ...SHOPPER, firstName: '   ' });
 
-        await checkoutPage.submitInformation({ ...SHOPPER, postalCode: '' });
+          await expect(checkoutPage.error).toHaveText('Error: First Name is required');
+        },
+      );
 
-        await expect(checkoutPage.error).toHaveText('Error: Postal Code is required');
-      });
+      test(
+        'TC-17 valid information is kept and leads to the overview',
+        knownBugs([persona === 'problem_user', 'BUG-11'], [persona === 'error_user', 'BUG-17']),
+        async ({ page, checkoutPage }) => {
+          await checkoutPage.fillInformation(SHOPPER);
+          await expect(checkoutPage.firstName).toHaveValue(SHOPPER.firstName);
+          await expect(checkoutPage.lastName).toHaveValue(SHOPPER.lastName);
+          await expect(checkoutPage.postalCode).toHaveValue(SHOPPER.postalCode);
 
-      test('TC-16 whitespace-only first name is rejected', async ({ checkoutPage }) => {
-        knownBug(persona !== 'problem_user', 'BUG-04');
-        knownBug(persona === 'problem_user', 'BUG-11');
-
-        await checkoutPage.submitInformation({ ...SHOPPER, firstName: '   ' });
-
-        await expect(checkoutPage.error).toHaveText('Error: First Name is required');
-      });
-
-      test('TC-17 valid information is kept and leads to the overview', async ({ page, checkoutPage }) => {
-        knownBug(persona === 'problem_user', 'BUG-11');
-        knownBug(persona === 'error_user', 'BUG-17');
-
-        await checkoutPage.fillInformation(SHOPPER);
-        await expect(checkoutPage.firstName).toHaveValue(SHOPPER.firstName);
-        await expect(checkoutPage.lastName).toHaveValue(SHOPPER.lastName);
-        await expect(checkoutPage.postalCode).toHaveValue(SHOPPER.postalCode);
-
-        await checkoutPage.continueButton.click();
-        await expect(page).toHaveURL(/checkout-step-two\.html$/);
-      });
+          await checkoutPage.continueButton.click();
+          await expect(page).toHaveURL(/checkout-step-two\.html$/);
+        },
+      );
     });
 
-    test('TC-18 overview totals add up', async ({ cartPage, checkoutPage }) => {
-      knownBug(persona === 'problem_user', 'BUG-27');
-      await cartPage.seed(PRODUCTS);
-      await checkoutPage.gotoOverview();
-      await expect(checkoutPage.itemPrices).toHaveCount(PRODUCTS.length);
+    test(
+      'TC-18 overview totals add up',
+      knownBugs([persona === 'problem_user', 'BUG-27']),
+      async ({ cartPage, checkoutPage }) => {
+        await cartPage.seed(PRODUCTS);
+        await checkoutPage.gotoOverview();
+        await expect(checkoutPage.itemPrices).toHaveCount(PRODUCTS.length);
 
-      const catalogCents = PRODUCTS.reduce((sum, p) => sum + toCents(p.price), 0);
-      const lineCents = (await checkoutPage.itemPrices.allTextContents()).map(parseCents);
-      expect(lineCents.reduce((a, b) => a + b, 0), 'line prices = catalog prices').toBe(catalogCents);
+        const catalogCents = PRODUCTS.reduce((sum, p) => sum + toCents(p.price), 0);
+        const lineCents = (await checkoutPage.itemPrices.allTextContents()).map(parseCents);
+        expect(lineCents.reduce((a, b) => a + b, 0), 'line prices = catalog prices').toBe(catalogCents);
 
-      const subtotal = parseCents(await checkoutPage.subtotal.innerText());
-      const tax = parseCents(await checkoutPage.tax.innerText());
-      const total = parseCents(await checkoutPage.total.innerText());
-      expect(subtotal, 'item total = sum of line prices').toBe(catalogCents);
-      expect(total, 'total = item total + tax').toBe(subtotal + tax);
-    });
+        const subtotal = parseCents(await checkoutPage.subtotal.innerText());
+        const tax = parseCents(await checkoutPage.tax.innerText());
+        const total = parseCents(await checkoutPage.total.innerText());
+        expect(subtotal, 'item total = sum of line prices').toBe(catalogCents);
+        expect(total, 'total = item total + tax').toBe(subtotal + tax);
+      },
+    );
 
-    test('TC-18 overview amounts always show cents', async ({ checkoutPage }) => {
-      knownBug(true, 'BUG-03');
+    test('TC-18 overview amounts always show cents', knownBugs([true, 'BUG-03']), async ({ checkoutPage }) => {
       // Empty cart is the boundary case: every amount is zero.
       await checkoutPage.gotoOverview();
 
@@ -95,20 +105,21 @@ for (const persona of SHOPPING_PERSONAS) {
       }
     });
 
-    test('TC-19 finish places the order and empties the cart', async ({ cartPage, checkoutPage, header }) => {
-      knownBug(persona === 'problem_user', 'BUG-28');
-      knownBug(persona === 'error_user', 'BUG-19');
-      await cartPage.seed([backpack]);
-      await checkoutPage.gotoOverview();
+    test(
+      'TC-19 finish places the order and empties the cart',
+      knownBugs([persona === 'problem_user', 'BUG-28'], [persona === 'error_user', 'BUG-19']),
+      async ({ cartPage, checkoutPage, header }) => {
+        await cartPage.seed([backpack]);
+        await checkoutPage.gotoOverview();
 
-      await checkoutPage.finishButton.click();
+        await checkoutPage.finishButton.click();
 
-      await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
-      await expect(header.cartBadge).toBeHidden();
-    });
+        await expect(checkoutPage.completeHeader).toHaveText('Thank you for your order!');
+        await expect(header.cartBadge).toBeHidden();
+      },
+    );
 
-    test('TC-25 checkout cannot start with an empty cart', async ({ page, cartPage }) => {
-      knownBug(true, 'BUG-02');
+    test('TC-25 checkout cannot start with an empty cart', knownBugs([true, 'BUG-02']), async ({ page, cartPage }) => {
       await cartPage.goto();
       await expect(cartPage.items).toHaveCount(0);
 
@@ -117,18 +128,17 @@ for (const persona of SHOPPING_PERSONAS) {
       await expect(page).toHaveURL(/cart\.html$/);
     });
 
-    test('TC-25 order confirmation is not reachable by URL with a full cart', async ({
-      page,
-      cartPage,
-      checkoutPage,
-    }) => {
-      knownBug(true, 'BUG-05');
-      await cartPage.seed([backpack]);
+    test(
+      'TC-25 order confirmation is not reachable by URL with a full cart',
+      knownBugs([true, 'BUG-05']),
+      async ({ page, cartPage, checkoutPage }) => {
+        await cartPage.seed([backpack]);
 
-      await checkoutPage.gotoComplete();
-      await expect(page.getByTestId('title')).toBeVisible();
+        await checkoutPage.gotoComplete();
+        await expect(page.getByTestId('title')).toBeVisible();
 
-      await expect(checkoutPage.completeHeader).toBeHidden();
-    });
+        await expect(checkoutPage.completeHeader).toBeHidden();
+      },
+    );
   });
 }

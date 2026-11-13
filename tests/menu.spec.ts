@@ -1,4 +1,4 @@
-import { expect, knownBug, test } from '../fixtures/test';
+import { expect, knownBugs, test } from '../fixtures/test';
 import { SHOPPING_PERSONAS } from '../data/personas';
 import { productByName } from '../data/products';
 
@@ -26,21 +26,21 @@ for (const persona of SHOPPING_PERSONAS) {
         await expect(cartPage.items).toHaveCount(0);
       });
 
-      test('TC-21 reset restores the "Add to cart" buttons', async ({ inventoryPage }) => {
-        knownBug(true, 'BUG-01');
-
+      test('TC-21 reset restores the "Add to cart" buttons', knownBugs([true, 'BUG-01']), async ({ inventoryPage }) => {
         for (const product of cartContents) {
           await expect(inventoryPage.cartButton(product), product.name).toHaveText('Add to cart');
         }
       });
     });
 
-    test('TC-22 About link points to the Sauce Labs website', async ({ header }) => {
-      knownBug(persona === 'problem_user', 'BUG-12');
+    test(
+      'TC-22 About link points to the Sauce Labs website',
+      knownBugs([persona === 'problem_user', 'BUG-12']),
+      async ({ header }) => {
+        await header.menuButton.click();
 
-      await header.menuButton.click();
-
-      await expect(header.aboutLink).toHaveAttribute('href', 'https://saucelabs.com/');
-    });
+        await expect(header.aboutLink).toHaveAttribute('href', 'https://saucelabs.com/');
+      },
+    );
   });
 }

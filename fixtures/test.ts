@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from '@playwright/test';
+import { test as base, expect, type Page, type TestDetails } from '@playwright/test';
 import { KNOWN_BUGS, type BugId } from '../data/known-bugs';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
@@ -6,6 +6,8 @@ import { Header } from '../pages/Header';
 import { InventoryPage } from '../pages/InventoryPage';
 import { ItemPage } from '../pages/ItemPage';
 import { LoginPage } from '../pages/LoginPage';
+
+const KNOWN_BUG_TAG = '@known-bug';
 
 type Fixtures = {
   loginPage: LoginPage;
@@ -20,6 +22,8 @@ type Fixtures = {
    * Baseline Persona within the same run (no committed screenshots).
    */
   secondPage: Page;
+  /** Marks every test tagged by `knownBugs(...)` as expected to fail. */
+  knownBugPins: void;
 };
 
 export const test = base.extend<Fixtures>({
@@ -34,16 +38,30 @@ export const test = base.extend<Fixtures>({
     await use(await context.newPage());
     await context.close();
   },
+  knownBugPins: [
+    async ({}, use, testInfo) => {
+      for (const tag of testInfo.tags) {
+        const id = tag.slice(1) as BugId;
+        if (!tag.startsWith('@') || !Object.hasOwn(KNOWN_BUGS, id)) continue;
+        testInfo.fail(true, `${id}: ${KNOWN_BUGS[id]}`);
+        testInfo.annotations.push({ type: 'bug', description: id });
+      }
+      await use();
+    },
+    { auto: true },
+  ],
 });
 
 export { expect };
 
 /**
- * Pins a Known Bug: when `affected` is true the test is expected to fail
- * (it stays green while the Bug exists and turns red once it is fixed),
- * and the report gets a `bug` annotation linking to BUGS.md.
+ * Pins Known Bugs on a test declaration: each `[affected, id]` pair whose
+ * `affected` is true tags the test `@known-bug` and `@BUG-NN`, so the report
+ * shows and filters it, and the `knownBugPins` fixture marks it expected to
+ * fail (green while the Bug exists, red once it is fixed) with a `bug`
+ * annotation linking to BUGS.md.
  */
-export function knownBug(affected: boolean, id: BugId) {
-  test.fail(affected, `${id}: ${KNOWN_BUGS[id]}`);
-  if (affected) test.info().annotations.push({ type: 'bug', description: id });
+export function knownBugs(...pins: [affected: boolean, id: BugId][]): TestDetails {
+  const ids = [...new Set(pins.filter(([affected]) => affected).map(([, id]) => id))];
+  return { tag: ids.length ? [KNOWN_BUG_TAG, ...ids.map((id) => `@${id}`)] : [] };
 }

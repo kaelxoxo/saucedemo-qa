@@ -52,10 +52,11 @@ Test design and traceability: **[TEST-CASES.md](TEST-CASES.md)**. Every Test Cas
 
 ## Known Bugs: why the suite is green
 
-Tests check for **correct** behaviour. When a Persona hits a confirmed site Bug, that test is marked `test.fail(...)` with a `BUG-NN` ID:
+Tests check for **correct** behaviour. When a Persona hits a confirmed site Bug, that test is declared with `knownBugs([condition, 'BUG-NN'])`. That tags it `@known-bug` and `@BUG-NN`, and a fixture marks it as an expected failure:
 
 - the suite stays green while the Bug exists;
 - once the Bug is fixed, that test **turns red**, which tells you to remove the marker;
+- in the HTML report these tests show a ✓ (they failed as expected) plus `@known-bug` and `@BUG-NN` labels. Type `@known-bug` or a single ID such as `@BUG-25` in the report's search box to list them;
 - each Bug is fully documented in **[BUGS.md](BUGS.md)**: steps, expected and actual result, Severity, Priority, evidence, and a link to the test.
 
 ## UX review
@@ -75,7 +76,7 @@ An AI agent built this repo under my direction. I made the design decisions, rev
 
 ```
 pages/                Page Objects (one per page) built on data-test attributes, plus Header
-fixtures/test.ts      Playwright fixtures and knownBug(), which pins a Known Bug as an expected failure
+fixtures/test.ts      Playwright fixtures; knownBugs() tags a test with its Known Bug IDs and the knownBugPins fixture marks it as an expected failure
 data/                 Personas, product catalogue (names, prices, sort orders), Known Bug IDs
 tests/                Specs, each running once per Persona
 scripts/              Script that generates the UX screenshots

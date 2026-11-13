@@ -15,7 +15,7 @@ Role: an independent QA sub-agent that has not seen the build conversation. It c
 | ID | Check | Pass condition |
 |----|-------|----------------|
 | D1 | Clean-clone run | In a fresh clone, the README quickstart commands run as written and `npm test` exits 0. |
-| D2 | Known Bug integrity | Every `knownBug(...)` ID exists in `BUGS.md`, and every `BUGS.md` entry is pinned by a test. |
+| D2 | Known Bug integrity | Every pinned ID (`knownBugs(...)`, which becomes the `@BUG-NN` test tags) exists in `BUGS.md`, and every `BUGS.md` entry is pinned by a test. |
 | D3 | Bug report quality | Every `BUGS.md` entry has steps, expected, actual, Severity, Priority, environment, evidence, and a linked test; the evidence files exist. |
 | D4 | UX Issues | There are 3–5 issues; each has an annotated screenshot that exists, the impact on the Shopper, and a concrete improvement. |
 | D5 | Report covers the brief | `REPORT.md` covers all four required topics. |
