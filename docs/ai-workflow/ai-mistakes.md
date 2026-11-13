@@ -1,6 +1,6 @@
 # Where AI got things wrong
 
-Every entry below happened during this build and was caught by a re-check, an independent judge, the test suite itself, or me. None are hypothetical, and each one links to its source.
+Every entry below happened during this build and was caught by a re-check, an independent judge, the test suite itself, or me. None are hypothetical. Entries that cite a judge Verdict, a BUGS.md ID or a UX Issue link to it. The rest (rows 9–11 and 12–16) come from the sub-agents' build reports in the session, whose transcripts are not committed (see [decisions Q17](decisions.md)).
 
 ## Explorer mistakes caught downstream
 
@@ -21,7 +21,7 @@ Every entry below happened during this build and was caught by a re-check, an in
 |---|---|---|
 | 9 | The judge, and I as orchestrator, told the suite builder "only key-by-key typing shows the last-name bug". | That overcorrected. `fill()` reproduces the Bug as well (Last Name stays empty and the value lands in First Name); only the pattern differs. The builder checked both methods and reported it. |
 | 10 | The UX agent's first draft repeated the explorer's claim that tap targets under 44 px fail WCAG. | WCAG 2.2's AA minimum (2.5.8) is 24 px with a spacing exception, and the 20×20 menu button passes through that exception. The accurate claim is a failure of 2.5.5 (AAA, 44 px). |
-| 11 | The explorer put Finish at y=860 on a phone, and the UX agent measured y=1129. | Both were right for different cart sizes. The judge then rejected "Finish below the fold" as a UX Issue altogether, because the button comes after the totals in normal checkout order. I accepted that, and it was removed from UX-03. |
+| 11 | The explorer put Finish 16 px below the fold on a phone and filed it as a UX Issue. The UX agent first annotated it as part of UX-03. | The judge rejected "Finish below the fold" as a UX Issue (verdicts M4: y=860 with 1 item, y=1747 with 4), because the button coming after the totals is the normal checkout order. I accepted that, and it was removed from UX-03. |
 
 ## Suite builder mistakes caught during the build
 

@@ -6,7 +6,7 @@ export const KNOWN_BUGS = {
   'BUG-01': 'Reset App State leaves "Remove" buttons on the inventory',
   'BUG-02': 'Checkout can be started with an empty cart',
   'BUG-03': 'Empty-cart overview shows "Item total: $0" without decimals',
-  'BUG-04': 'Checkout accepts whitespace-only customer information',
+  'BUG-04': 'Checkout accepts whitespace-only checkout information',
   'BUG-05': 'Order confirmation page reachable by URL while the cart still holds items',
   'BUG-06': 'problem_user: every product image is the same placeholder photo',
   'BUG-07': 'problem_user: sorting the inventory has no effect',

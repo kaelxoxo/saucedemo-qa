@@ -4,7 +4,9 @@
 
 Automated end-to-end tests, a bug catalogue, and a UX review of [SauceDemo](https://www.saucedemo.com), a public demo shop. Built as a QA take-home exercise.
 
-**Start here → [REPORT.md](REPORT.md)** (one page: bugs, UX recommendations, approach, where AI helped and where it got things wrong).
+**Start here → [REPORT.md](REPORT.md)** (one page: bugs, UX recommendations, approach, where AI helped and where it got things wrong; printable copy: [REPORT.pdf](REPORT.pdf)).
+
+**Walkthrough video (3 min):** _link_
 
 ## Quickstart
 
@@ -37,7 +39,7 @@ The site lists six demo **Personas**. `standard_user` is the **Baseline Persona*
 
 | Area | Covered |
 |------|---------|
-| Login | Valid login, locked-out user, empty or wrong credentials, logged-out access to inner pages |
+| Login | Valid login, the locked-out Persona, empty or wrong credentials, logged-out access to inner pages |
 | Inventory | Product names, images, prices, all four sort orders |
 | Product page | Opens the right product, details match the inventory |
 | Cart | Add and remove from inventory and from the product page, cart badge, cart contents |

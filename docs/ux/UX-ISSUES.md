@@ -22,18 +22,20 @@ Viewports: desktop 1280x900 and phone 390x844 (deviceScaleFactor 2, touch), head
 
 ---
 
-## UX-02: Checkout form feedback is misleading and blank input is accepted
+## UX-02: Checkout form feedback is misleading and a non-numeric ZIP is accepted
 
 ![Only First Name is empty, but all three inputs are red](UX-02a-checkout-all-fields-red.png)
-![Overview reached with spaces-only names and a non-numeric zip](UX-02b-whitespace-accepted.png)
+![Overview reached with Jane / Doe and the ZIP ABCDE-not-a-zip](UX-02b-non-numeric-zip-accepted.png)
 
-**What the Shopper experiences:** The Shopper leaves only First Name empty, but all three fields turn red. Fixing that field reveals the next error on the next submit. Names made only of spaces and the zip `ABCDE-not-a-zip` go straight through to the overview.
+**What the Shopper experiences:** The Shopper leaves only First Name empty, but all three fields turn red. Fixing that field reveals the next error on the next submit. A ZIP like `ABCDE-not-a-zip` goes straight through to the overview without any warning.
 
-**Evidence:** All fields empty → `Error: First Name is required`. Fill First Name → `Error: Last Name is required`. With only First Name empty, all 3 inputs get class `error` (red border `rgb(226, 35, 26)`), and none has `aria-invalid`. The banner has `role="alert"`. `"   "` / `"   "` / `ABCDE-not-a-zip` → `/checkout-step-two.html`.
+**Evidence:** All fields empty → `Error: First Name is required`. Fill First Name → `Error: Last Name is required`. With only First Name empty, all 3 inputs get class `error` (red border `rgb(226, 35, 26)`), and none has `aria-invalid`. The banner has `role="alert"`. `Jane` / `Doe` / `ABCDE-not-a-zip` → `/checkout-step-two.html`.
 
-**Why it matters:** WCAG 3.3.1 Error Identification: valid fields are shown as errors. WCAG 3.3.3 Error Suggestion: the message gives no guidance. The extra round trips cause checkout drop-off, and orders end up with unusable shipping data.
+**Why it matters:** WCAG 3.3.1 Error Identification: valid fields are shown as errors. WCAG 3.3.3 Error Suggestion: the message gives no guidance. The extra round trips cause checkout drop-off, and a mistyped ZIP goes into the order unchecked.
 
-**Improvement:** On submit, trim and validate every field. Mark only the invalid fields with `aria-invalid="true"` and an inline message connected through `aria-describedby`, for example "Enter your first name" or "Enter a 5-digit ZIP code". Show all errors at once.
+**Improvement:** On submit, validate every field and check the ZIP against a postal-code format (for example 5 digits for the US). Mark only the invalid fields with `aria-invalid="true"` and an inline message connected through `aria-describedby`, for example "Enter your first name" or "Enter a 5-digit ZIP code". Show all errors at once.
+
+Blank (spaces-only) names are tracked separately as Bug BUG-04 in [BUGS.md](../../BUGS.md).
 
 **Effort:** S
 
@@ -72,15 +74,15 @@ Viewports: desktop 1280x900 and phone 390x844 (deviceScaleFactor 2, touch), head
 
 ---
 
-## UX-05: Keyboard users can't see focus and can't reach the cart
+## UX-05: Keyboard-only Shoppers can't see focus and can't reach the cart
 
 ![Add to cart has keyboard focus with no visible ring; the cart is skipped by Tab](UX-05-keyboard-no-focus-ring.png)
 
-**What the Shopper experiences:** A keyboard user presses Tab and sees no sign of where focus is. Even with careful counting, there is no way to reach the cart, so checkout can't be completed without a mouse.
+**What the Shopper experiences:** A keyboard-only Shopper presses Tab and sees no sign of where focus is. Even with careful counting, there is no way to reach the cart, so checkout can't be completed without a mouse.
 
 **Evidence:** The Tab order is burger → sort → image link → title link → Add to cart → …. Add to cart matches `:focus-visible`, yet its computed `outline-style` and `box-shadow` are `none`, and the focused and unfocused element screenshots are pixel-identical. The cart is `<a role="button">` with no `href` or `tabindex`. It never receives Tab focus, and `focus()` has no effect. The menu has no Cart entry.
 
-**Why it matters:** This fails WCAG 2.4.7 Focus Visible and 2.1.1 Keyboard. It is a hard blocker for keyboard-only and switch users.
+**Why it matters:** This fails WCAG 2.4.7 Focus Visible and 2.1.1 Keyboard. It is a hard blocker for keyboard-only and switch-device Shoppers.
 
 **Improvement:** Add a `:focus-visible` outline (2px, offset 2px, contrast of at least 3:1). Make the cart `<a href="/cart.html">` so it gets native focus and Enter handling.
 

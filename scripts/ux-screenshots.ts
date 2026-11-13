@@ -178,20 +178,20 @@ async function ux02Checkout(browser: Browser, outDir: string): Promise<void> {
   ], { gap: 3 });
   await shoot(page, outDir, 'UX-02a-checkout-all-fields-red.png');
 
-  // Whitespace-only names and a non-numeric postal code are accepted.
+  // A non-numeric postal code is accepted (with valid names).
   await page.reload();
-  await first.fill('   ');
-  await last.fill('   ');
+  await first.fill('Jane');
+  await last.fill('Doe');
   await zip.fill('ABCDE-not-a-zip');
   await cont.click();
   await page.waitForURL('**/checkout-step-two.html');
-  check(page.url().endsWith('/checkout-step-two.html'), 'spaces-only names + "ABCDE-not-a-zip" proceed to overview');
+  check(page.url().endsWith('/checkout-step-two.html'), 'Jane / Doe / "ABCDE-not-a-zip" proceeds to overview');
   const overviewTitle = page.locator('[data-test="title"]', { hasText: 'Checkout: Overview' });
   await overviewTitle.waitFor();
-  await annotate(page, 'UX-02', 'Blank names, garbage zip accepted', [
-    { locator: overviewTitle, note: 'Reached with names "   " and zip "ABCDE-not-a-zip"', side: 'right' },
+  await annotate(page, 'UX-02', 'Non-numeric ZIP accepted', [
+    { locator: overviewTitle, note: 'Reached with ZIP "ABCDE-not-a-zip"', side: 'right' },
   ], { gap: 4, labelSide: 'below' });
-  await shoot(page, outDir, 'UX-02b-whitespace-accepted.png');
+  await shoot(page, outDir, 'UX-02b-non-numeric-zip-accepted.png');
   await ctx.close();
 }
 
