@@ -6,9 +6,6 @@ I directed a small team of AI agents and made every decision that shaped the del
 
 - **Harness:** [omp](https://github.com/can1357/oh-my-pi), a terminal AI coding agent that can spawn sub-agents, drive a real Chromium browser, and run shell commands.
 - **Model:** Claude Opus 5.5 (Anthropic) for the orchestrator, every sub-agent, and both judges.
-  - My workspace config planned a different model (GPT-6 Sol) for the executor sub-agents. This harness has per-call model selection switched off, so they ran on the orchestrator's model.
-  - A typed-check model (Jev, via OpenRouter) was configured as an optional extra check. It returned `402 Payment Required`, so all checking fell back to Opus, as the config prescribes.
-  - I mention both because the brief asks where AI went wrong. The tooling did not always do what the config said.
 - **Cost to the reviewer:** none. The test suite is plain Playwright and needs no API key.
 
 ## Pipeline
