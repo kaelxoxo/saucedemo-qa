@@ -1,0 +1,26 @@
+{
+  "name": "saucedemo-qa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated Playwright tests for the SauceDemo (Swag Labs) demo shop",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:desktop": "playwright test --project=desktop-chromium",
+    "test:mobile": "playwright test --project=mobile-chromium",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit",
+    "ux:screenshots": "node scripts/ux-screenshots.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "@types/pngjs": "^6.0.5",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0",
+    "typescript": "^7.0.2"
+  }
+}
