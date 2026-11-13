@@ -4,7 +4,7 @@ I directed a small team of AI agents and made every decision that shaped the del
 
 ## Tools
 
-- **Harness:** [omp](https://github.com/can1357/oh-my-pi), a terminal AI coding agent that can spawn sub-agents, drive a real Chromium browser, and run shell commands.
+- **Harness:** Claude Code, Anthropic's terminal AI coding agent, which can spawn sub-agents, drive a real Chromium browser, and run shell commands.
 - **Model:** Claude Opus 5.5 (Anthropic) for the orchestrator, every sub-agent, and both judges.
 - **Cost to the reviewer:** none. The test suite is plain Playwright and needs no API key.
 

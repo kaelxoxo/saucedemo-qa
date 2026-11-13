@@ -33,7 +33,7 @@
 
 ## 4. Where AI helped and where it got things wrong ([full log](docs/ai-workflow/ai-mistakes.md))
 
-I ran an orchestrated team of AI agents (Claude Opus 5.5 in [omp](https://github.com/can1357/oh-my-pi)): an explorer, a test builder, a UX agent, and two independent judges ([workflow](docs/ai-workflow.md)). It interviewed me on every design decision before building, and I made the calls ([decisions](docs/ai-workflow/decisions.md)).
+I ran an orchestrated team of AI agents (Claude Opus 5.5 in Claude Code): an explorer, a test builder, a UX agent, and two independent judges ([workflow](docs/ai-workflow.md)). It interviewed me on every design decision before building, and I made the calls ([decisions](docs/ai-workflow/decisions.md)).
 
 **Helped:** walking 6 Personas through every flow in minutes, turning observations into 181 tests and 28 structured bug reports, and re-checking all 80 raw Findings live.
 
