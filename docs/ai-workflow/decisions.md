@@ -22,3 +22,4 @@ Before any code was written, the orchestrating AI interviewed me in rounds. Each
 | Q18 | Bug report format | — | Standard fields: steps, expected, actual, Severity, Priority, environment, evidence, linked test |
 | Q19 | Written test cases | — | `TEST-CASES.md` lists each Test Case with its design technique and traces it to the automated test |
 | Q20 | Scope | Keep to intern scale / best effort | **Overrode the recommendation.** Best effort, not deliberately simplified |
+| Q21 | Order of the top 5 UX Issues | Orchestrator's order (keyboard access first) / rank by how many Shoppers hit it | **Overrode the recommendation.** Keyboard-only shopping is rare, so the issues every Shopper hits come first: cart quantity, then mobile layout. Keyboard access stays in the top 5 at #5 because it fully blocks checkout for those Shoppers. |

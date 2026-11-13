@@ -40,10 +40,11 @@ Every entry below happened during this build and was caught by a re-check, an in
 | 17 | The orchestrator recommended building a separate free-tier LLM agent into the repo. | **Overruled.** "No need to pay" is about me, and the reviewer only runs the tests. The agent is the orchestrated workflow itself ([decisions](decisions.md)). |
 | 18 | The judge classified checkout with an empty cart (S2) as a UX Issue. | **Overruled to Bug (BUG-02).** The shop confirms an order with zero items. |
 | 19 | The judge classified spaces-only checkout fields (S4) as a UX Issue. | **Overruled to Bug (BUG-04).** Three spaces pass the shop's own "required" check. |
+| 20 | The orchestrator ranked keyboard access as the #1 UX Issue. | **Reordered.** I ranked by how many Shoppers hit each issue. Cart quantity and mobile layout come first, and keyboard access is #5 ([decisions Q21](decisions.md)). |
 
 ## Tooling that didn't match its configuration
 
 | # | Configured | Actual |
 |---|---|---|
-| 20 | Executor sub-agents run a separate model (GPT-6 Sol). | Per-call model selection was disabled in the harness, so every agent ran Claude Opus 5.5. |
-| 21 | A typed-check model (Jev) adds brief-vs-result checks. | It returned HTTP 402 (payment required), and judging fell back to Opus. |
+| 21 | Executor sub-agents run a separate model (GPT-6 Sol). | Per-call model selection was disabled in the harness, so every agent ran Claude Opus 5.5. |
+| 22 | A typed-check model (Jev) adds brief-vs-result checks. | It returned HTTP 402 (payment required), and judging fell back to Opus. |

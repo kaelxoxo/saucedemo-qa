@@ -2,6 +2,16 @@
 
 Five UX Issues found on SauceDemo with the Baseline Persona (`standard_user`). Each one works as built but confuses, slows down, or blocks a real Shopper. Every claim below was measured on the live site, and `scripts/ux-screenshots.ts` checks the claims again each time it regenerates the annotated screenshots (`npm run ux:screenshots`). If a claim no longer holds, the script stops without saving that image.
 
+**Order: ranked by how many Shoppers hit the issue, then by how badly.** The IDs are fixed labels that also appear in the screenshots, so they don't follow the ranking.
+
+| Rank | Issue | Who hits it |
+|---|---|---|
+| 1 | [UX-01](#ux-01-the-cart-has-no-quantity-control-and-no-product-thumbnails) Cart has no quantity control or thumbnails | Every Shopper who wants more than one of an item, and anyone checking their cart |
+| 2 | [UX-03](#ux-03-on-mobile-the-first-add-to-cart-sits-below-the-fold-and-tap-targets-are-tiny) Mobile: first Add to cart below the fold, tiny tap targets | Every phone Shopper |
+| 3 | [UX-02](#ux-02-checkout-form-feedback-is-misleading-and-a-non-numeric-zip-is-accepted) Checkout form feedback | Every Shopper who makes a mistake at checkout |
+| 4 | [UX-04](#ux-04-the-selected-sort-is-lost-after-viewing-a-product) Sort resets after viewing a product | Shoppers comparing several products |
+| 5 | [UX-05](#ux-05-keyboard-only-shoppers-cant-see-focus-and-cant-reach-the-cart) Keyboard focus invisible, cart unreachable | Fewer Shoppers, but it blocks checkout completely for them, and it fails WCAG |
+
 Viewports: desktop 1280x900 and phone 390x844 (deviceScaleFactor 2, touch), headless Chromium.
 
 ---
@@ -22,6 +32,22 @@ Viewports: desktop 1280x900 and phone 390x844 (deviceScaleFactor 2, touch), head
 
 ---
 
+## UX-03: On mobile, the first Add to cart sits below the fold and tap targets are tiny
+
+![Inventory on a phone: the first Add to cart starts at y=850, below the 844px fold; the menu button and sort icon are small](UX-03a-mobile-inventory-fold.png)
+
+**What the Shopper experiences:** On a phone, the first product fills the whole screen, but its Add to cart button sits just out of view below a large blank area. The menu icon and the sort icon in the header are hard to hit.
+
+**Evidence:** 390x844 viewport. The first Add to cart starts at y=850 and is 34px tall. It is pushed below the fold by a 256px empty gap between the description (bottom at y=517) and the price (y=773). The menu button is 20x20 px, and the sort control is 40x30 px.
+
+**Why it matters:** The call to action is hidden at the moment the Shopper decides to buy, and the blank gap looks like the end of the card. The 20x20 menu button is below the 24px minimum of WCAG 2.5.8 Target Size (Minimum). It only passes through that criterion's spacing exception. It fails 2.5.5 Target Size (Enhanced, 44x44), and so do the sort control and Add to cart.
+
+**Improvement:** Remove the fixed-height gap in product cards on narrow screens so the price and Add to cart sit directly under the description. Pad the menu button and sort control to 44x44 hit areas, and make Add to cart at least 44px tall.
+
+**Effort:** S
+
+---
+
 ## UX-02: Checkout form feedback is misleading and a non-numeric ZIP is accepted
 
 ![Only First Name is empty, but all three inputs are red](UX-02a-checkout-all-fields-red.png)
@@ -36,22 +62,6 @@ Viewports: desktop 1280x900 and phone 390x844 (deviceScaleFactor 2, touch), head
 **Improvement:** On submit, validate every field and check the ZIP against a postal-code format (for example 5 digits for the US). Mark only the invalid fields with `aria-invalid="true"` and an inline message connected through `aria-describedby`, for example "Enter your first name" or "Enter a 5-digit ZIP code". Show all errors at once.
 
 Blank (spaces-only) names are tracked separately as Bug BUG-04 in [BUGS.md](../../BUGS.md).
-
-**Effort:** S
-
----
-
-## UX-03: On mobile, the first Add to cart sits below the fold and tap targets are tiny
-
-![Inventory on a phone: the first Add to cart starts at y=850, below the 844px fold; the menu button and sort icon are small](UX-03a-mobile-inventory-fold.png)
-
-**What the Shopper experiences:** On a phone, the first product fills the whole screen, but its Add to cart button sits just out of view below a large blank area. The menu icon and the sort icon in the header are hard to hit.
-
-**Evidence:** 390x844 viewport. The first Add to cart starts at y=850 and is 34px tall. It is pushed below the fold by a 256px empty gap between the description (bottom at y=517) and the price (y=773). The menu button is 20x20 px, and the sort control is 40x30 px.
-
-**Why it matters:** The call to action is hidden at the moment the Shopper decides to buy, and the blank gap looks like the end of the card. The 20x20 menu button is below the 24px minimum of WCAG 2.5.8 Target Size (Minimum). It only passes through that criterion's spacing exception. It fails 2.5.5 Target Size (Enhanced, 44x44), and so do the sort control and Add to cart.
-
-**Improvement:** Remove the fixed-height gap in product cards on narrow screens so the price and Add to cart sit directly under the description. Pad the menu button and sort control to 44x44 hit areas, and make Add to cart at least 44px tall.
 
 **Effort:** S
 

@@ -15,13 +15,13 @@
 
 ¹ BUG-04 doesn't apply to `problem_user`, whose BUG-11 fails first. Severity (harm) and Priority (fix order) are rated separately: BUG-27 is Critical but P2, because BUG-11 already blocks the way to it. *Out of scope:* the session is a client-side cookie that can be forged. That's harmless here because the passwords are public; on a real shop it would need a server-side check.
 
-## 2. UX recommendations, top 5 ([UX-ISSUES.md](docs/ux/UX-ISSUES.md), annotated screenshots)
+## 2. UX recommendations, top 5 by Shopper impact ([UX-ISSUES.md](docs/ux/UX-ISSUES.md), annotated screenshots)
 
-1. **Keyboard-only Shoppers can't reach the cart or see focus.** Make the cart a real link and add a `:focus-visible` ring (WCAG 2.1.1, 2.4.7).
-2. **Checkout form:** one empty field turns all three fields red, errors appear one at a time, and a non-numeric ZIP is accepted. Validate all fields at once, inline, with `aria-invalid`.
-3. **Cart:** no quantity control, no thumbnails. Add a −/+ stepper and 64 px images.
+1. **Cart:** you can't buy two of anything (no quantity control), and rows have no thumbnails. Add a −/+ stepper and 64 px images.
+2. **Mobile:** a 256 px gap pushes the first Add to cart below the fold, and the menu button is 20×20. Remove the gap; use 44 px targets.
+3. **Checkout form:** one empty field turns all three red, errors show one at a time, and a non-numeric ZIP is accepted. Validate all fields at once, inline, with `aria-invalid`.
 4. **Sort resets** after "Back to products". Keep it in the URL; show the active sort on mobile.
-5. **Mobile:** a 256 px gap pushes the first Add to cart below the fold, and the menu button is 20×20. Remove the gap; use 44 px targets.
+5. **Keyboard-only Shoppers** can't see focus or reach the cart. Make the cart a real link and add a `:focus-visible` ring (WCAG 2.1.1, 2.4.7).
 
 ## 3. Why this approach
 
@@ -42,6 +42,6 @@ I ran an orchestrated team of AI agents (Claude Opus 5.5 in [omp](https://github
 - The explorer called `problem_user`'s checkout overview unreachable. It wasn't, and two Bugs it missed were there (BUG-27, BUG-28).
 - It filed a site-wide Bug as `problem_user`-only (BUG-26), recorded a wrong reproduction result (P9), and reported a console message that came from its own tooling (E10).
 - The builder's first locator made some expected failures fail for the wrong reason. It caught this only by reading the failure messages, not the pass counts.
-- I **overruled** the judge twice (BUG-02, BUG-04) and accepted its 38 Rejections.
+- I **overruled** the AI three times: two judge Verdicts (BUG-02, BUG-04) and its UX ranking. I accepted the judge's 38 Rejections.
 
 **Lesson:** AI is fast at coverage and unreliable on specifics, so every claim gets an independent re-check.
